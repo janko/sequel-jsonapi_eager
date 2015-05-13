@@ -24,7 +24,13 @@ module Sequel
             association_name, association_include = relationship.split(".", 2)
             association_dataset = send("#{association_name}_dataset")
               .jsonapi_eager(association_include.to_s)
-            associations[association_name.to_sym] = association_dataset.all
+            association_reflection = self.class.association_reflections.fetch(association_name.to_sym)
+
+            if association_reflection[:type].to_s =~ /one$/
+              associations[association_name.to_sym] = association_dataset.all[0]
+            else
+              associations[association_name.to_sym] = association_dataset.all
+            end
           end
 
           self
