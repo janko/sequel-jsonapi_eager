@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name         = "sequel-jsonapi_eager"
-  spec.version      = "0.0.1"
+  spec.version      = "0.0.2"
   spec.authors      = ["Janko Marohnić"]
   spec.email        = ["janko.marohnic@gmail.com"]
 
