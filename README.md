@@ -1,5 +1,10 @@
 # Sequel::Plugins::JsonapiEager
 
+*DEPRECATION NOTICE: This gem is deprecated in favor of the
+`tactical_eager_loading` Sequel plugin. It solves all of the eager loading
+automatically, and it also reuses reciprocal associations which eliminates
+DoSing. And it's general so it can be also used outside of JSON APIs.*
+
 This [Sequel](http://sequel.jeremyevans.net/) plugin enables you to dynamically
 eager load associations of objects you're exposing for your JSON API.
 
