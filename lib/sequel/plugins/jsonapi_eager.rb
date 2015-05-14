@@ -21,15 +21,13 @@ module Sequel
           includes = includes.split(",") if includes.is_a?(String)
 
           includes.each do |relationship|
-            association_name, association_include = relationship.split(".", 2)
-            association_dataset = send("#{association_name}_dataset")
-              .jsonapi_eager(association_include.to_s)
-            association_reflection = self.class.association_reflections.fetch(association_name.to_sym)
-
-            if association_reflection[:type].to_s =~ /one$/
-              associations[association_name.to_sym] = association_dataset.all[0]
+            assoc_name, assoc_include = relationship.split(".", 2)
+            if model.associations.map(&:to_s).include?(assoc_name)
+              associations[assoc_name.to_sym] = send(assoc_name) do |ds|
+                ds.jsonapi_eager(assoc_include.to_s)
+              end
             else
-              associations[association_name.to_sym] = association_dataset.all
+              raise UndefinedAssociation, "#{model} doesn't have association #{assoc_name.inspect}"
             end
           end
 

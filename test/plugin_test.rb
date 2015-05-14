@@ -1,4 +1,5 @@
 require "test_helper"
+require "pry"
 
 class PluginTest < Minitest::Test
   include Minitest::Hooks
@@ -35,6 +36,23 @@ class PluginTest < Minitest::Test
   def test_passing_array
     user = User.jsonapi_eager(include_param.split(",")).all.first
     assert_user(user)
+  end
+
+  def test_undefined_association
+    assert_raises(Sequel::UndefinedAssociation) { @user.jsonapi_eager("foo") }
+    assert_raises(Sequel::UndefinedAssociation) { User.jsonapi_eager("foo") }
+    assert_raises(Sequel::UndefinedAssociation) { User.dataset.jsonapi_eager("foo") }
+  end
+
+  def test_symbol_creation
+    User.jsonapi_eager("foo.bar,baz") rescue nil
+    assert_empty Symbol.all_symbols.grep(/foo|bar|baz/)
+
+    User.dataset.jsonapi_eager("foo.bar,baz") rescue nil
+    assert_empty Symbol.all_symbols.grep(/foo|bar|baz/)
+
+    @user.jsonapi_eager("foo.bar,baz") rescue nil
+    assert_empty Symbol.all_symbols.grep(/foo|bar|baz/)
   end
 
   private
